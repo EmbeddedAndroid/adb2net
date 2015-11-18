@@ -1,4 +1,10 @@
-set -x
+if [ -z "$DEBUG" ]
+  then
+    echo "Debug Disabled - Set DEBUG to enable"
+else
+    echo "Enabling Debug"
+    set -x
+fi
 if [ -z "$1" ]
   then
     echo "No ssh host given"
