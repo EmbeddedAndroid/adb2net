@@ -1,6 +1,6 @@
 # adb2net
 
-This is the least complicated way I've found to found to forward a remotely
+This is the least complicated way I've found to forward a remotely
 connected adb target. You don't have to mess about with restarting the
 adb server, because you are forwarding the target's adb traffic directly
 over a tcp socket from the remote host.
