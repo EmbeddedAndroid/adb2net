@@ -15,9 +15,9 @@ over a tcp socket from the remote host.
 
 ./adb2net <user@remoteserver> <adbserial> [local port]
 
-## Untested
+## Tested
 
-1) More than one device on the same remote host
+1) Multple devices, with unique local ports
 
 ## Contributing
 
