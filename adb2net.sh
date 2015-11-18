@@ -1,38 +1,79 @@
-if [ -z "$DEBUG" ]
-  then
-    echo "Debug Disabled - Set DEBUG to enable"
-else
+#!/bin/bash
+
+while [[ $# > 1 ]]
+do
+key="$1"
+
+case $key in
+    -h|--host)
+    HOST="$2"
+    shift # past argument=value
+    ;;
+    -s|--serial-number)
+    SERIAL="$2"
+    shift # past argument=value
+    ;;
+    -l|--local-port)
+    LOCAL_PORT="$2"
+    shift # past argument=value
+    ;;
+    -k|--kill-connection-on-port)
+    KILL="$2"
+    shift # past argument=value
+    ;;
+    -d|--debug)
     echo "Enabling Debug"
     set -x
+    shift # past argument with no value
+    ;;
+    *)
+            # unknown option
+    ;;
+esac
+shift # past arguent or value
+done
+
+if [ -n "$KILL" ]
+  then
+    echo "Killing connection on port $KILL"
+    adb disconnect localhost:$KILL
+    sleep 5
+    adb devices
+    kill `cat /tmp/ssh-tunnel-$KILL.pid`
+    exit 0
 fi
-if [ -z "$1" ]
+if [ -z "$HOST" ]
   then
     echo "No ssh host given"
     exit 1
 fi
-if [ -z "$2" ]
+if [ -z "$SERIAL" ]
   then
     echo "No adb serial number given"
     exit 1
 fi
-if [ -z "$3" ]
+if [ -z "$LOCAL_PORT" ]
   then
     echo "No local port specified, using default of 5555"
-    local_port=5555
-else
-    local_port=$3
+    LOCAL_PORT=5555
 fi
-randomish_port=$(shuf -i 2000-65000 -n 1)
+
+RANDOMISH_PORT=$(shuf -i 2000-65000 -n 1)
+
 echo "ADB == usb"
-ssh $1 -C "adb -s $2 usb"
+ssh $HOST -C "adb -s $SERIAL usb"
 sleep 5
 echo "ADB == tcpip:5555"
-ssh $1 -C "adb -s $2 tcpip 5555"
+ssh $HOST -C "adb -s $SERIAL tcpip 5555"
 sleep 5
-echo "ADB == localhost:$randomish_port"
-ssh $1 -C "adb -s $2 forward tcp:$randomish_port tcp:5555"
+echo "ADB == localhost:$RANDOMISH_PORT"
+ssh $HOST -C "adb -s $SERIAL forward tcp:$RANDOMISH_PORT tcp:5555"
 sleep 5
-echo "Port forwarding remotehost:$randomism_port to localhost $local_port"
-echo "To Connect: adb connect localhost:$local_port"
-echo "Ctrl-C To Exit"
-ssh -N -L $local_port:localhost:$randomish_port $1
+echo "Port forwarding remotehost:$RANDOMISH_PORT to localhost:$LOCAL_PORT"
+ssh -fNt -L $LOCAL_PORT:localhost:$RANDOMISH_PORT $HOST
+TUNNEL_PID=$(pgrep -f "ssh -fNt -L $LOCAL_PORT:localhost:$RANDOMISH_PORT $HOST")
+echo $TUNNEL_PID > /tmp/ssh-tunnel-$LOCAL_PORT.pid
+sleep 5
+adb connect localhost:$LOCAL_PORT
+sleep 5
+adb devices

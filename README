@@ -13,7 +13,21 @@ over a tcp socket from the remote host.
 
 ## Usage
 
-./adb2net <user@remoteserver> <adbserial> [local port]
+Connect to remote target over adb:
+
+./adb2net -h <user@remoteserver> -s <adbserial>
+
+Connect to remote target over adb with debugging:
+
+./adb2net -h <user@remoteserver> -s <adbserial> --debug
+
+Connect to remote target over adb with a user specified local port (Default is 5555):
+
+./adb2net -h <user@remoteserver> -s <adbserial> -l 5558
+
+Disconnect from remote target by specifying the local port in use:
+
+./adb2net -k 5555
 
 ## Tested
 
