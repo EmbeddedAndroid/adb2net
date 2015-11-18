@@ -6,6 +6,7 @@ adb server, because you are forwarding the target's adb traffic directly
 over a tcp socket from the remote host.
 
 ## Installation
+
 1) Remote host with password less authentication setup
 2) Target device connected to the remote host
 3) Target device's adb serial number
@@ -13,6 +14,10 @@ over a tcp socket from the remote host.
 ## Usage
 
 ./adb2net <user@remoteserver> <adbserial> [local port]
+
+## Untested
+
+1) More than one device on the same remote host
 
 ## Contributing
 
