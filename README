@@ -1,0 +1,31 @@
+# adb2net
+
+This is the least complicated way I've found to found to forward a remotely
+connected adb target. You don't have to mess about with restarting the
+adb server, because you are forwarding the target's adb traffic directly
+over a tcp socket from the remote host.
+
+## Installation
+1) Remote host with password less authentication setup
+2) Target device connected to the remote host
+3) Target device's adb serial number
+
+## Usage
+
+./adb2net <user@remoteserver> <adbserial> [local port]
+
+## Contributing
+
+1. Fork it!
+2. Create your feature branch: `git checkout -b my-new-feature`
+3. Commit your changes: `git commit -am 'Add some feature'`
+4. Push to the branch: `git push origin my-new-feature`
+5. Submit a pull request :D
+
+## History
+
+2015-11-17 - Initial Hack
+
+## License
+
+GPLv2
